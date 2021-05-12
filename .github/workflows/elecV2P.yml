@@ -1,0 +1,28 @@
+# Collected by PoisonW
+# File: .github/workflows/elecV2P.yml
+name: elecV2P
+on:
+  schedule:
+    - cron: '0 5 * * 3,6'
+  workflow_dispatch:
+  watch:
+    types: started
+jobs:
+  repo-sync:
+    env:
+      PAT: ${{ secrets.PAT }} #此处PAT需要申请
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: elecV2P
+        uses: repo-sync/github-sync@v2
+        if: env.PAT
+        with:
+          source_repo: "https://github.com/elecV2/elecV2P.git"
+          source_branch: "master"
+          destination_branch: "elecV2P"
+          github_token: ${{ secrets.PAT }}
